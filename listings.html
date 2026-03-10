@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Объявления | Радочин Григорий Петрович</title>
+    <meta name="description" content="Актуальные объекты недвижимости в Челябинске">
+    <!-- Tailwind + Inter font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#00324F',
+                        softBlue: '#5F7D9C',
+                        lightBeige: '#F5F0E8',
+                        accentOrange: '#E57A44'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5F0E8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #5F7D9C;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00324F;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        /* Disable smooth scroll for modal */
+        #modalCard {
+            scroll-behavior: auto !important;
+        }
+        
+        /* Max logo footer styling */
+        .max-logo-footer {
+            width: 24px;
+            height: 24px;
+            transition: filter 0.3s ease;
+        }
+        
+        .bg-white\/10 .max-logo-footer {
+            filter: brightness(0) saturate(100%) invert(36%) sepia(92%) saturate(1752%) hue-rotate(346deg) brightness(102%) contrast(97%);
+        }
+        
+        .bg-white\/10:hover .max-logo-footer {
+            filter: brightness(0) invert(1);
+        }
+
+        .btn-accent {
+            background-color: #E57A44;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-accent:hover {
+            background-color: #c95f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(229, 122, 68, 0.3);
+        }
+        
+        .btn-outline-accent { 
+            border: 2px solid #E57A44; 
+            color: #E57A44; 
+            background: transparent; 
+            transition: all 0.3s ease;
+        }
+        .btn-outline-accent:hover { 
+            background-color: #E57A44; 
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .card-hover { 
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 25px 50px -12px rgba(0, 50, 79, 0.25);
+        }
+        
+        .mobile-menu { display: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu { display: block; }
+        }
+        
+        /* Dropdown menu */
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #E57A44;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Listing badge */
+        .listing-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: linear-gradient(135deg, #E57A44, #D06A3A);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        /* Price tag */
+        .price-tag {
+            background: rgba(0, 50, 79, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        /* Listing card flex layout */
+        .listing-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .listing-card .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .listing-card .card-footer {
+            margin-top: auto;
+        }
+        
+        /* Placeholder image for listings */
+        .listing-placeholder {
+            background: linear-gradient(135deg, #00324F 0%, #5F7D9C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Filter button active */
+        .filter-btn.active {
+            background-color: #E57A44;
+            color: white;
+            border-color: #E57A44;
+        }
+    </style>
+</head>
+<body class="bg-lightBeige text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-deepBlue text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Логотип -->
+                <a href="index.html" class="flex items-center space-x-3 group">
+                    <img src="materials/src/Logo.svg" alt="Радочин Г.П." class="w-12 h-12 group-hover:opacity-80 transition-opacity" style="filter: brightness(0) invert(1);">
+                    <div>
+                        <span class="font-semibold text-lg tracking-tight block">Радочин Г.П.</span>
+                        <span class="text-xs text-softBlue block -mt-1">Недвижимость Челябинск</span>
+                    </div>
+                </a>
+
+                <!-- Навигация -->
+                <nav class="nav-links space-x-6 text-sm font-medium">
+                    <a href="index.html#home" class="nav-link hover:text-softBlue transition">Главная</a>
+                    <a href="listings.html" class="nav-link active hover:text-softBlue transition">Объявления</a>
+                    <a href="index.html#services" class="nav-link hover:text-softBlue transition">Услуги</a>
+                    <a href="index.html#cases" class="nav-link hover:text-softBlue transition">Кейсы</a>
+                    <a href="index.html#contact" class="nav-link hover:text-softBlue transition">Контакты</a>
+                    
+                    <div class="dropdown inline-block relative">
+                        <button class="nav-link hover:text-softBlue transition flex items-center gap-1">
+                            Инструменты
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-2 bg-deepBlue rounded-lg shadow-lg border border-softBlue/30 overflow-hidden">
+                            <a href="calculator.html" class="block px-4 py-3 hover:bg-softBlue/20 hover:text-accentOrange transition">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Калькулятор ипотеки
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="flex items-center gap-3">
+                    <a href="index.html#contact" class="hidden lg:inline-block btn-accent text-sm px-5 py-2 rounded-full font-medium">Консультация</a>
+                    <button id="menuBtn" class="mobile-menu text-white focus:outline-none text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Мобильное меню -->
+            <div id="mobileDropdown" class="hidden bg-deepBlue border-t border-softBlue/30 px-4 py-3 flex flex-col space-y-2 text-sm">
+                <a href="index.html#home" class="py-2 hover:text-softBlue mobile-link">Главная</a>
+                <a href="listings.html" class="py-2 text-accentOrange mobile-link">Объявления</a>
+                <a href="index.html#services" class="py-2 hover:text-softBlue mobile-link">Услуги</a>
+                <a href="index.html#cases" class="py-2 hover:text-softBlue mobile-link">Кейсы</a>
+                <a href="calculator.html" class="py-2 hover:text-softBlue mobile-link">
+                    <i class="fas fa-calculator mr-2"></i>Калькулятор ипотеки
+                </a>
+                <a href="index.html#contact" class="py-2 hover:text-softBlue mobile-link">Контакты</a>
+                <a href="index.html#contact" class="btn-accent text-center px-3 py-2 rounded-full mt-2">Консультация</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow py-12">
+        <div class="container mx-auto px-4">
+            <!-- Page Header -->
+            <div class="text-center mb-10" data-aos="fade-down">
+                <a href="index.html" class="inline-flex items-center gap-2 text-softBlue hover:text-accentOrange transition-colors mb-4">
+                    <i class="fas fa-arrow-left"></i>
+                    На главную
+                </a>
+                <h1 class="text-3xl md:text-4xl font-bold text-deepBlue mb-4">
+                    <i class="fas fa-th-large text-accentOrange mr-3"></i>
+                    Все объекты
+                </h1>
+                <p class="text-softBlue text-lg max-w-2xl mx-auto">
+                    Квартиры, дома и коммерческая недвижимость в Челябинске и области
+                </p>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex flex-wrap justify-center gap-3 mb-10" data-aos="fade-up">
+                <button class="filter-btn active btn-outline-accent px-5 py-2 rounded-full font-medium text-sm" data-filter="all">
+                    <i class="fas fa-th mr-2"></i>Все
+                </button>
+                <button class="filter-btn btn-outline-accent px-5 py-2 rounded-full font-medium text-sm" data-filter="flat">
+                    <i class="fas fa-building mr-2"></i>Квартиры
+                </button>
+                <button class="filter-btn btn-outline-accent px-5 py-2 rounded-full font-medium text-sm" data-filter="house">
+                    <i class="fas fa-house mr-2"></i>Дома
+                </button>
+                <button class="filter-btn btn-outline-accent px-5 py-2 rounded-full font-medium text-sm" data-filter="garage">
+                    <i class="fas fa-warehouse mr-2"></i>Гаражи
+                </button>
+                <button class="filter-btn btn-outline-accent px-5 py-2 rounded-full font-medium text-sm" data-filter="commercial">
+                    <i class="fas fa-store mr-2"></i>Коммерческая
+                </button>
+            </div>
+            
+            <!-- Listings Grid (заполняется из базы данных) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="listingsGrid">
+                <!-- Карточки будут загружены из listings.json -->
+            </div>
+            
+            <!-- No results message -->
+            <div id="noResults" class="hidden text-center py-16">
+                <div class="w-20 h-20 bg-lightBeige rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-search text-3xl text-softBlue"></i>
+                </div>
+                <h3 class="text-xl font-bold text-deepBlue mb-2">Ничего не найдено</h3>
+                <p class="text-gray-600">Попробуйте выбрать другую категорию</p>
+            </div>
+            
+            <!-- CTA -->
+            <div class="text-center mt-12" data-aos="fade-up">
+                <div class="bg-accentOrange/10 rounded-2xl p-8 max-w-2xl mx-auto">
+                    <h3 class="text-xl font-bold text-deepBlue mb-3">Не нашли подходящий объект?</h3>
+                    <p class="text-gray-600 mb-6">Свяжитесь со мной — подберу варианты по вашим критериям, в том числе из закрытой базы</p>
+                    <a href="index.html#contact" class="btn-accent inline-block px-8 py-3 rounded-full font-semibold">
+                        <i class="fas fa-phone mr-2"></i>
+                        Связаться со мной
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-deepBlue text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <p class="font-semibold mb-1">© 2026 Радочин Григорий Петрович</p>
+                    <p class="text-sm text-softBlue">Недвижимость в Челябинске</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="https://vk.com/id763965660" target="_blank" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accentOrange transition-colors">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                    <a href="https://vk.com/id763965660" target="_blank" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accentOrange transition-colors">
+                        <img src="materials/src/Max_logo.svg" alt="Max" class="w-6 h-6 max-logo-footer">
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accentOrange transition-colors">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                </div>
+                <a href="#" class="text-softBlue hover:text-white text-sm transition-colors">Политика конфиденциальности</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/listings.js"></script>
+    <script>
+        $(document).ready(function() {
+            // AOS init
+            AOS.init({ once: true, offset: 50, duration: 600 });
+            
+            // Mobile menu
+            $('#menuBtn').on('click', function() {
+                $('#mobileDropdown').toggleClass('hidden');
+                const $icon = $(this).find('i');
+                $icon.toggleClass('fa-bars fa-xmark');
+            });
+            
+            $('.mobile-link').on('click', function() {
+                $('#mobileDropdown').addClass('hidden');
+                $('#menuBtn i').addClass('fa-bars').removeClass('fa-xmark');
+            });
+            
+            // Header shadow on scroll
+            $(window).on('scroll', function() {
+                const $header = $('header');
+                if ($(this).scrollTop() > 50) {
+                    $header.addClass('shadow-xl');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

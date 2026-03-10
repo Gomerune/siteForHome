@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ипотечный калькулятор | Радочин Григорий Петрович</title>
+    <meta name="description" content="Рассчитайте ежемесячный платёж по ипотеке онлайн">
+    <!-- Tailwind + Inter font -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deepBlue: '#00324F',
+                        softBlue: '#5F7D9C',
+                        lightBeige: '#F5F0E8',
+                        accentOrange: '#E57A44'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F5F0E8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #5F7D9C;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00324F;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        /* Disable smooth scroll for modal */
+        #modalCard {
+            scroll-behavior: auto !important;
+        }
+        
+        /* Max logo footer styling */
+        .max-logo-footer {
+            width: 24px;
+            height: 24px;
+            transition: filter 0.3s ease;
+        }
+        
+        .bg-white\/10 .max-logo-footer {
+            filter: brightness(0) saturate(100%) invert(36%) sepia(92%) saturate(1752%) hue-rotate(346deg) brightness(102%) contrast(97%);
+        }
+        
+        .bg-white\/10:hover .max-logo-footer {
+            filter: brightness(0) invert(1);
+        }
+
+        .btn-accent {
+            background-color: #E57A44;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-accent:hover {
+            background-color: #c95f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(229, 122, 68, 0.3);
+        }
+        
+        .mobile-menu { display: none; }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu { display: block; }
+        }
+        
+        /* Dropdown menu */
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #E57A44;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Range slider custom styles */
+        .range-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #E0E0E0;
+            outline: none;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #E57A44;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(229, 122, 68, 0.4);
+            transition: all 0.2s ease;
+        }
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(229, 122, 68, 0.5);
+        }
+        .range-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #E57A44;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(229, 122, 68, 0.4);
+        }
+        
+        /* Result card animation */
+        .result-card {
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Mortgage type buttons */
+        .mortgage-type-btn {
+            transition: all 0.3s ease;
+        }
+        .mortgage-type-btn.active {
+            background-color: #E57A44;
+            color: white;
+            border-color: #E57A44;
+        }
+    </style>
+</head>
+<body class="bg-lightBeige text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-deepBlue text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <!-- Логотип -->
+                <a href="index.html" class="flex items-center space-x-3 group">
+                    <img src="materials/src/Logo.svg" alt="Радочин Г.П." class="w-12 h-12 group-hover:opacity-80 transition-opacity" style="filter: brightness(0) invert(1);">
+                    <div>
+                        <span class="font-semibold text-lg tracking-tight block">Радочин Г.П.</span>
+                        <span class="text-xs text-softBlue block -mt-1">Недвижимость Челябинск</span>
+                    </div>
+                </a>
+
+                <!-- Навигация -->
+                <nav class="nav-links space-x-6 text-sm font-medium">
+                    <a href="index.html#home" class="nav-link hover:text-softBlue transition">Главная</a>
+                    <a href="listings.html" class="nav-link hover:text-softBlue transition">Объявления</a>
+                    <a href="index.html#services" class="nav-link hover:text-softBlue transition">Услуги</a>
+                    <a href="index.html#cases" class="nav-link hover:text-softBlue transition">Кейсы</a>
+                    <a href="index.html#contact" class="nav-link hover:text-softBlue transition">Контакты</a>
+                    
+                    <div class="dropdown inline-block relative">
+                        <button class="nav-link active hover:text-softBlue transition flex items-center gap-1">
+                            Инструменты
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-2 bg-deepBlue rounded-lg shadow-lg border border-softBlue/30 overflow-hidden">
+                            <a href="calculator.html" class="block px-4 py-3 bg-softBlue/20 text-accentOrange transition">
+                                <i class="fas fa-calculator mr-2"></i>
+                                Калькулятор ипотеки
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="flex items-center gap-3">
+                    <a href="index.html#contact" class="hidden lg:inline-block btn-accent text-sm px-5 py-2 rounded-full font-medium">Консультация</a>
+                    <button id="menuBtn" class="mobile-menu text-white focus:outline-none text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Мобильное меню -->
+            <div id="mobileDropdown" class="hidden bg-deepBlue border-t border-softBlue/30 px-4 py-3 flex flex-col space-y-2 text-sm">
+                <a href="index.html#home" class="py-2 hover:text-softBlue mobile-link">Главная</a>
+                <a href="listings.html" class="py-2 hover:text-softBlue mobile-link">Объявления</a>
+                <a href="index.html#services" class="py-2 hover:text-softBlue mobile-link">Услуги</a>
+                <a href="index.html#cases" class="py-2 hover:text-softBlue mobile-link">Кейсы</a>
+                <a href="calculator.html" class="py-2 text-accentOrange mobile-link">
+                    <i class="fas fa-calculator mr-2"></i>Калькулятор ипотеки
+                </a>
+                <a href="index.html#contact" class="py-2 hover:text-softBlue mobile-link">Контакты</a>
+                <a href="index.html#contact" class="btn-accent text-center px-3 py-2 rounded-full mt-2">Консультация</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow py-12">
+        <div class="container mx-auto px-4 max-w-6xl">
+            <!-- Page Header -->
+            <div class="text-center mb-10" data-aos="fade-down">
+                <a href="index.html" class="inline-flex items-center gap-2 text-softBlue hover:text-accentOrange transition-colors mb-4">
+                    <i class="fas fa-arrow-left"></i>
+                    На главную
+                </a>
+                <h1 class="text-3xl md:text-4xl font-bold text-deepBlue mb-4">
+                    <i class="fas fa-calculator text-accentOrange mr-3"></i>
+                    Ипотечный калькулятор
+                </h1>
+                <p class="text-softBlue text-lg max-w-2xl mx-auto">
+                    Рассчитайте примерный ежемесячный платёж по ипотеке. Выберите программу и получите расчёт.
+                </p>
+            </div>
+            
+            <!-- Calculator -->
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Input Section -->
+                <div class="bg-white rounded-2xl p-8 shadow-lg" data-aos="fade-right">
+                    <h2 class="text-xl font-bold text-deepBlue mb-6">
+                        <i class="fas fa-sliders text-accentOrange mr-2"></i>
+                        Параметры кредита
+                    </h2>
+                    
+                    <!-- Mortgage Type Buttons -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-softBlue mb-3">Программа ипотеки</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" class="mortgage-type-btn active border border-softBlue/30 rounded-lg px-3 py-2 text-sm font-medium hover:border-accentOrange" data-rate="16" data-down="15">
+                                <i class="fas fa-home mr-1"></i>
+                                Стандартная
+                            </button>
+                            <button type="button" class="mortgage-type-btn border border-softBlue/30 rounded-lg px-3 py-2 text-sm font-medium hover:border-accentOrange" data-rate="6" data-down="20">
+                                <i class="fas fa-people-roof mr-1"></i>
+                                Семейная
+                            </button>
+                            <button type="button" class="mortgage-type-btn border border-softBlue/30 rounded-lg px-3 py-2 text-sm font-medium hover:border-accentOrange" data-rate="5" data-down="20">
+                                <i class="fas fa-laptop-code mr-1"></i>
+                                IT-ипотека
+                            </button>
+                            <button type="button" class="mortgage-type-btn border border-softBlue/30 rounded-lg px-3 py-2 text-sm font-medium hover:border-accentOrange" data-rate="2" data-down="20">
+                                <i class="fas fa-hand-holding-heart mr-1"></i>
+                                Господдержка
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <form id="calculatorForm" class="space-y-6">
+                        <!-- Стоимость квартиры -->
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="text-sm font-medium text-softBlue">Стоимость квартиры</label>
+                                <div class="relative inline-block w-40">
+                                    <input 
+                                        type="text" 
+                                        id="propertyCostInput" 
+                                        value="5 000 000"
+                                        class="w-full px-3 py-2 pr-8 text-right rounded-lg border border-softBlue/30 focus:border-accentOrange focus:ring-2 focus:ring-accentOrange/20 outline-none transition font-semibold text-deepBlue"
+                                    >
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">₽</span>
+                                </div>
+                            </div>
+                            <input 
+                                type="range" 
+                                id="propertyCost" 
+                                min="1000000" 
+                                max="30000000" 
+                                step="100000"
+                                value="5000000"
+                                class="range-slider"
+                            >
+                            <div class="flex justify-between text-xs text-gray-400 mt-2">
+                                <span>1 млн ₽</span>
+                                <span>30 млн ₽</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Первоначальный взнос -->
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="text-sm font-medium text-softBlue">Первоначальный взнос</label>
+                                <div class="flex items-center gap-2">
+                                    <input 
+                                        type="number" 
+                                        id="downPaymentPercentInput" 
+                                        value="15"
+                                        min="0"
+                                        max="100"
+                                        class="w-16 px-3 py-2 text-right rounded-lg border border-softBlue/30 focus:border-accentOrange focus:ring-2 focus:ring-accentOrange/20 outline-none transition font-semibold text-deepBlue"
+                                    >
+                                    <span class="text-gray-400">%</span>
+                                </div>
+                            </div>
+                            <input 
+                                type="range" 
+                                id="downPaymentPercent" 
+                                min="0" 
+                                max="100" 
+                                step="1"
+                                value="15"
+                                class="range-slider"
+                            >
+                            <div class="flex justify-between text-xs text-gray-400 mt-2">
+                                <span>0%</span>
+                                <span>100%</span>
+                            </div>
+                            <p class="text-sm text-softBlue mt-2">
+                                Сумма взноса: <span id="downPaymentAmount" class="font-semibold text-deepBlue">750 000 ₽</span>
+                            </p>
+                        </div>
+                        
+                        <!-- Срок кредита -->
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="text-sm font-medium text-softBlue">Срок кредита</label>
+                                <div class="flex items-center gap-2">
+                                    <input 
+                                        type="number" 
+                                        id="loanTermInput" 
+                                        value="20"
+                                        min="1"
+                                        max="30"
+                                        class="w-16 px-3 py-2 text-right rounded-lg border border-softBlue/30 focus:border-accentOrange focus:ring-2 focus:ring-accentOrange/20 outline-none transition font-semibold text-deepBlue"
+                                    >
+                                    <span class="text-gray-400">лет</span>
+                                </div>
+                            </div>
+                            <input 
+                                type="range" 
+                                id="loanTerm" 
+                                min="1" 
+                                max="30" 
+                                step="1"
+                                value="20"
+                                class="range-slider"
+                            >
+                            <div class="flex justify-between text-xs text-gray-400 mt-2">
+                                <span>1 год</span>
+                                <span>30 лет</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Процентная ставка -->
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <label class="text-sm font-medium text-softBlue">Процентная ставка</label>
+                                <div class="flex items-center gap-2">
+                                    <input 
+                                        type="number" 
+                                        id="interestRate" 
+                                        value="16"
+                                        min="1"
+                                        max="30"
+                                        step="0.1"
+                                        class="w-16 px-3 py-2 text-right rounded-lg border border-softBlue/30 focus:border-accentOrange focus:ring-2 focus:ring-accentOrange/20 outline-none transition font-semibold text-deepBlue"
+                                    >
+                                    <span class="text-gray-400">%</span>
+                                </div>
+                            </div>
+                            <input 
+                                type="range" 
+                                id="interestRateSlider" 
+                                min="1" 
+                                max="30" 
+                                step="0.1"
+                                value="16"
+                                class="range-slider"
+                            >
+                            <div class="flex justify-between text-xs text-gray-400 mt-2">
+                                <span>1%</span>
+                                <span>30%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Кнопка -->
+                        <button 
+                            type="submit" 
+                            class="btn-accent w-full py-4 rounded-xl text-lg font-semibold shadow-lg"
+                        >
+                            <i class="fas fa-calculator mr-2"></i>
+                            Рассчитать
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="space-y-6">
+                    <!-- Result Card -->
+                    <div id="resultCard" class="result-card bg-deepBlue rounded-2xl p-8 text-white hidden" data-aos="fade-left">
+                        <h2 class="text-xl font-bold mb-6">
+                            <i class="fas fa-chart-pie text-accentOrange mr-2"></i>
+                            Результаты расчёта
+                        </h2>
+                        
+                        <div class="text-center mb-8">
+                            <p class="text-white/70 mb-2 text-sm">Ежемесячный платёж</p>
+                            <p id="monthlyPayment" class="text-4xl md:text-5xl font-bold text-accentOrange">0 ₽</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/10 rounded-lg p-4">
+                                <p class="text-white/70 text-xs mb-1">Сумма кредита</p>
+                                <p id="loanAmount" class="text-lg font-semibold">0 ₽</p>
+                            </div>
+                            <div class="bg-white/10 rounded-lg p-4">
+                                <p class="text-white/70 text-xs mb-1">Первоначальный взнос</p>
+                                <p id="downPaymentResult" class="text-lg font-semibold">0 ₽</p>
+                            </div>
+                            <div class="bg-white/10 rounded-lg p-4">
+                                <p class="text-white/70 text-xs mb-1">Срок кредита</p>
+                                <p id="loanTermResult" class="text-lg font-semibold">0 лет</p>
+                            </div>
+                            <div class="bg-white/10 rounded-lg p-4">
+                                <p class="text-white/70 text-xs mb-1">Процентная ставка</p>
+                                <p id="interestRateResult" class="text-lg font-semibold">0%</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-white/20">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-white/70 text-sm">Общая сумма выплат</span>
+                                <span id="totalPayment" class="font-semibold">0 ₽</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-white/70 text-sm">Переплата по кредиту</span>
+                                <span id="totalInterest" class="font-semibold text-accentOrange">0 ₽</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Default State -->
+                    <div id="defaultState" class="bg-white rounded-2xl p-8 shadow-lg text-center" data-aos="fade-left">
+                        <div class="w-20 h-20 bg-lightBeige rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-calculator text-3xl text-softBlue"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-deepBlue mb-2">Введите параметры</h3>
+                        <p class="text-gray-600">
+                            Выберите программу ипотеки и настройте параметры кредита
+                        </p>
+                    </div>
+                    
+                    <!-- Info Card -->
+                    <div class="bg-white rounded-2xl p-6 shadow-lg" data-aos="fade-up">
+                        <h3 class="text-lg font-bold text-deepBlue mb-4">
+                            <i class="fas fa-circle-info text-accentOrange mr-2"></i>
+                            Программы ипотеки
+                        </h3>
+                        <ul class="space-y-3 text-gray-600 text-sm">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check text-accentOrange mt-0.5"></i>
+                                <span><strong>Семейная ипотека</strong> — 6% для семей с детьми до 2030 года</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check text-accentOrange mt-0.5"></i>
+                                <span><strong>IT-ипотека</strong> — 5% для работников аккредитованных IT-компаний</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check text-accentOrange mt-0.5"></i>
+                                <span><strong>Господдержка</strong> — 2% для отдельных категорий граждан</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-check text-accentOrange mt-0.5"></i>
+                                <span><strong>Стандартная</strong> — базовая программа для всех</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- CTA -->
+                    <div class="bg-accentOrange/10 rounded-2xl p-6 text-center" data-aos="fade-up">
+                        <h3 class="text-lg font-bold text-deepBlue mb-2">Нужна помощь с ипотекой?</h3>
+                        <p class="text-gray-600 mb-4 text-sm">Помогу подобрать выгодную программу и одобрить кредит</p>
+                        <a href="index.html#contact" class="btn-accent inline-block px-6 py-3 rounded-lg font-semibold">
+                            <i class="fas fa-phone mr-2"></i>
+                            Связаться со мной
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-deepBlue text-white py-10">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <p class="font-semibold mb-1">© 2026 Радочин Григорий Петрович</p>
+                    <p class="text-sm text-softBlue">Недвижимость в Челябинске</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="https://vk.com/id763965660" target="_blank" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accentOrange transition-colors">
+                        <i class="fab fa-vk"></i>
+                    </a>
+                    <a href="https://vk.com/id763965660" target="_blank" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accentOrange transition-colors">
+                        <img src="materials/src/Max_logo.svg" alt="Max" class="w-6 h-6 max-logo-footer">
+                    </a>
+                    <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-accentOrange transition-colors">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                </div>
+                <a href="#" class="text-softBlue hover:text-white text-sm transition-colors">Политика конфиденциальности</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // AOS init
+        AOS.init({ once: true, offset: 50, duration: 600 });
+        
+        // Format number with spaces
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+        
+        // Parse formatted number
+        function parseFormattedNumber(str) {
+            return parseInt(str.replace(/\s/g, '')) || 0;
+        }
+        
+        // Calculate mortgage (annuity formula)
+        function calculateMortgage() {
+            const propertyCost = parseInt(document.getElementById('propertyCost').value);
+            const downPaymentPercent = parseInt(document.getElementById('downPaymentPercent').value);
+            const loanTermYears = parseInt(document.getElementById('loanTerm').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            
+            const downPayment = propertyCost * (downPaymentPercent / 100);
+            const loanAmount = propertyCost - downPayment;
+            const monthlyRate = interestRate / 100 / 12;
+            const totalMonths = loanTermYears * 12;
+            
+            let monthlyPayment;
+            if (monthlyRate === 0) {
+                monthlyPayment = loanAmount / totalMonths;
+            } else {
+                const factor = Math.pow(1 + monthlyRate, totalMonths);
+                monthlyPayment = loanAmount * monthlyRate * factor / (factor - 1);
+            }
+            
+            const totalPayment = monthlyPayment * totalMonths;
+            const totalInterest = totalPayment - loanAmount;
+            
+            // Update results
+            document.getElementById('monthlyPayment').textContent = formatNumber(Math.round(monthlyPayment)) + ' ₽';
+            document.getElementById('loanAmount').textContent = formatNumber(Math.round(loanAmount)) + ' ₽';
+            document.getElementById('downPaymentResult').textContent = formatNumber(Math.round(downPayment)) + ' ₽';
+            document.getElementById('loanTermResult').textContent = loanTermYears + ' лет';
+            document.getElementById('interestRateResult').textContent = interestRate + '%';
+            document.getElementById('totalPayment').textContent = formatNumber(Math.round(totalPayment)) + ' ₽';
+            document.getElementById('totalInterest').textContent = formatNumber(Math.round(totalInterest)) + ' ₽';
+            
+            // Show result
+            document.getElementById('defaultState').classList.add('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+        }
+        
+        // Sync range and input
+        function syncInputs() {
+            const propertyCostRange = document.getElementById('propertyCost');
+            const propertyCostInput = document.getElementById('propertyCostInput');
+            
+            propertyCostRange.addEventListener('input', () => {
+                propertyCostInput.value = formatNumber(propertyCostRange.value);
+                updateDownPaymentAmount();
+            });
+            
+            propertyCostInput.addEventListener('change', () => {
+                const value = parseFormattedNumber(propertyCostInput.value);
+                propertyCostRange.value = Math.min(Math.max(value, 1000000), 30000000);
+                updateDownPaymentAmount();
+            });
+            
+            const downPaymentRange = document.getElementById('downPaymentPercent');
+            const downPaymentInput = document.getElementById('downPaymentPercentInput');
+            
+            downPaymentRange.addEventListener('input', () => {
+                downPaymentInput.value = downPaymentRange.value;
+                updateDownPaymentAmount();
+            });
+            
+            downPaymentInput.addEventListener('change', () => {
+                const value = parseInt(downPaymentInput.value);
+                downPaymentRange.value = Math.min(Math.max(value, 0), 100);
+                updateDownPaymentAmount();
+            });
+            
+            const loanTermRange = document.getElementById('loanTerm');
+            const loanTermInput = document.getElementById('loanTermInput');
+            
+            loanTermRange.addEventListener('input', () => {
+                loanTermInput.value = loanTermRange.value;
+            });
+            
+            loanTermInput.addEventListener('change', () => {
+                const value = parseInt(loanTermInput.value);
+                loanTermRange.value = Math.min(Math.max(value, 1), 30);
+            });
+            
+            const interestRateRange = document.getElementById('interestRateSlider');
+            const interestRateInput = document.getElementById('interestRate');
+            
+            interestRateRange.addEventListener('input', () => {
+                interestRateInput.value = interestRateRange.value;
+            });
+            
+            interestRateInput.addEventListener('change', () => {
+                const value = parseFloat(interestRateInput.value);
+                interestRateRange.value = Math.min(Math.max(value, 1), 30);
+            });
+        }
+        
+        function updateDownPaymentAmount() {
+            const propertyCost = parseInt(document.getElementById('propertyCost').value);
+            const downPaymentPercent = parseInt(document.getElementById('downPaymentPercent').value);
+            const downPayment = propertyCost * (downPaymentPercent / 100);
+            document.getElementById('downPaymentAmount').textContent = formatNumber(Math.round(downPayment)) + ' ₽';
+        }
+        
+        // Mortgage type buttons
+        const mortgageTypeBtns = document.querySelectorAll('.mortgage-type-btn');
+        const interestRateInput = document.getElementById('interestRate');
+        const interestRateSlider = document.getElementById('interestRateSlider');
+        const downPaymentPercentInput = document.getElementById('downPaymentPercentInput');
+        const downPaymentPercentRange = document.getElementById('downPaymentPercent');
+        
+        mortgageTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                mortgageTypeBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Get rate and down payment from data attributes
+                const rate = parseFloat(btn.dataset.rate);
+                const downPayment = parseInt(btn.dataset.down);
+                
+                // Update interest rate
+                interestRateInput.value = rate;
+                interestRateSlider.value = rate;
+                
+                // Update down payment
+                downPaymentPercentInput.value = downPayment;
+                downPaymentPercentRange.value = downPayment;
+                updateDownPaymentAmount();
+            });
+        });
+        
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileDropdown = document.getElementById('mobileDropdown');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                mobileDropdown.classList.toggle('hidden');
+                const icon = menuBtn.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-xmark');
+            });
+        }
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileDropdown.classList.add('hidden');
+                const icon = menuBtn.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-xmark');
+            });
+        });
+        
+        // Header shadow on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-xl');
+            }
+        });
+        
+        // Form submit
+        document.getElementById('calculatorForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            calculateMortgage();
+        });
+        
+        // Init
+        syncInputs();
+        updateDownPaymentAmount();
+    </script>
+</body>
+</html>

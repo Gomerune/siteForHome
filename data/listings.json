@@ -1,0 +1,140 @@
+{
+  "listings": [
+    {
+      "id": 1,
+      "title": "2-к квартира, 64 м²",
+      "type": "flat",
+      "price": 8500000,
+      "address": "Челябинск, пр. Ленина, 45",
+      "bedrooms": 2,
+      "area": 64,
+      "floor": "5/12",
+      "badge": "В работе",
+      "description": "Просторная двухкомнатная квартира в центре города. Развитая инфраструктура, рядом школы, детские сады, торговые центры. Квартира с ремонтом, готова к заселению.",
+      "features": ["Кондиционер", "Балкон", "Парковка", "Лифт"],
+      "images": [
+        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1484154218962-a1c002085d2f?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&auto=format&fit=crop"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Дом с участком, 120 м²",
+      "type": "house",
+      "price": 12300000,
+      "address": "Челябинская обл., пос. Рощино",
+      "bedrooms": 4,
+      "area": 120,
+      "land": 6,
+      "badge": "Срочно",
+      "description": "Загородный дом с земельным участком в экологически чистом районе. Дом построен из кирпича, есть гараж и баня. Отличное место для семейного отдыха.",
+      "features": ["Гараж", "Баня", "Сад", "Газ"],
+      "images": [
+        "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=800&auto=format&fit=crop"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Студия, 32 м²",
+      "type": "flat",
+      "price": 4200000,
+      "address": "Челябинск, ул. Кирова, 88",
+      "bedrooms": 1,
+      "area": 32,
+      "floor": "8/16",
+      "badge": "Новинка",
+      "description": "Современная студия в новом жилом комплексе. Панорамные окна, дизайнерский ремонт. Идеально для молодёжи или под сдачу.",
+      "features": ["Панорамные окна", "Дизайнерский ремонт", "Консьерж", "Спортзал"],
+      "images": [
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&auto=format&fit=crop"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "3-к квартира, 98 м²",
+      "type": "flat",
+      "price": 15800000,
+      "address": "Челябинск, ул. Вайнера, 12",
+      "bedrooms": 3,
+      "area": 98,
+      "floor": "10/24",
+      "badge": "В работе",
+      "description": "Роскошная трёхкомнатная квартира в престижном районе. Вид на город, премиальный ремонт, закрытый двор. Все удобства для комфортной жизни.",
+      "features": ["Вид на город", "Премиум ремонт", "Закрытый двор", "Подземный паркинг"],
+      "images": [
+        "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1556912167-f556f1f39faa?w=800&auto=format&fit=crop"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Гараж, 24 м²",
+      "type": "garage",
+      "price": 850000,
+      "address": "Челябинск, ГСК «Автолюбитель»",
+      "area": 24,
+      "badge": "Продано",
+      "description": "Капитальный гараж в охраняемом кооперативе. Есть смотровая яма, электричество. Удобный подъезд.",
+      "features": ["Свет", "Яма", "Охрана", "Ворота"],
+      "images": []
+    },
+    {
+      "id": 6,
+      "title": "Помещение, 150 м²",
+      "type": "commercial",
+      "price": 25000000,
+      "address": "Челябинск, пр. Комсомольский, 28",
+      "area": 150,
+      "floor": "1",
+      "badge": "В работе",
+      "description": "Коммерческое помещение на первой линии. Высокий пешеходный трафик, отдельный вход, витринные окна. Подходит под офис, магазин, салон.",
+      "features": ["Первая линия", "Витринные окна", "Отдельный вход", "Парковка"],
+      "images": [
+        "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&auto=format&fit=crop"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "1-к квартира, 42 м²",
+      "type": "flat",
+      "price": 5900000,
+      "address": "Челябинск, ул. Труда, 156",
+      "bedrooms": 1,
+      "area": 42,
+      "floor": "7/18",
+      "badge": "В работе",
+      "description": "Уютная однокомнатная квартира в современном доме. Рядом метро, торговые центры, парки. Отличный вариант для жизни или инвестиций.",
+      "features": ["Метро рядом", "ТЦ рядом", "Парк", "Детская площадка"],
+      "images": [
+        "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1484154218962-a1c002085d2f?w=800&auto=format&fit=crop"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Коттедж, 250 м²",
+      "type": "house",
+      "price": 28500000,
+      "address": "Челябинская обл., пос. Кременкуль",
+      "bedrooms": 5,
+      "area": 250,
+      "land": 12,
+      "badge": "Эксклюзив",
+      "description": "Роскошный коттедж в элитном посёлке. Авторский проект, качественные материалы, ландшафтный дизайн. Бассейн, сауна, гараж на 2 авто.",
+      "features": ["Бассейн", "Сауна", "Гараж на 2 авто", "Ландшафт"],
+      "images": [
+        "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&auto=format&fit=crop"
+      ]
+    }
+  ]
+}
